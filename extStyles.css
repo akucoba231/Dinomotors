@@ -1,0 +1,22 @@
+/* UPDATE: Menambahkan pointer dan hover effect pada baris bintang */
+.star-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 10px;
+    border-bottom: 1px dashed #E0E0E0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #4A4A4A;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.star-row:hover { background: #E8F5E9; }
+.star-row:last-child { border-bottom: none; }
+
+/* Modal Riwayat Table */
+#riwayatModal .modal-content { max-width: 400px; width: 95%; padding: 20px 10px; }
+#riwayatModal table { font-size: 12px; }
+#riwayatModal th, #riwayatModal td { padding: 8px 4px; }
