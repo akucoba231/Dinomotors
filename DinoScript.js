@@ -13,14 +13,14 @@ try {
 } catch(e) { localStorage.removeItem('dinoPenilaian'); }
 
 // MATERI NON-LOKOMOTOR
-const dataMateri = [
+/*const dataMateri = [
     { id_materi: 'N1', nama_materi: 'Menekuk', instruksi: 'Lakukan gerakan menekuk lutut atau siku tubuh tanpa berpindah tempat.', tujuan: 'Siswa mampu melatih kelenturan persendian melalui gerakan menekuk.', video: [{judul: 'Permainan Pohon Tertiup Angin'}, {judul: 'Variasi Jongkok Berdiri'}, {judul: 'Menekuk Lutut Memeluk Kaki'}] },
     { id_materi: 'N2', nama_materi: 'Memutar', instruksi: 'Putar bagian tubuh seperti lengan, pinggang, atau leher secara perlahan.', tujuan: 'Siswa dapat meningkatkan rentang gerak sendi melalui putaran.', video: [{judul: 'Permainan Baling-baling Helikopter'}, {judul: 'Memutar Simpai di Pinggang'}, {judul: 'Estafet Bola Sambil Memutar Tubuh'}] },
     { id_materi: 'N3', nama_materi: 'Mengayun', instruksi: 'Ayunkan kedua lengan atau kaki ke depan dan ke belakang secara bergantian.', tujuan: 'Siswa mampu mengontrol ritme dan keluwesan otot melalui ayunan.', video: [{judul: 'Permainan Jam Bandul'}, {judul: 'Mengayun Lengan Berpasangan'}, {judul: 'Ayunan Kaki Setengah Lingkaran'}] },
     { id_materi: 'N4', nama_materi: 'Mendorong', instruksi: 'Lakukan gerakan mendorong sebuah objek diam atau telapak tangan teman.', tujuan: 'Siswa melatih kekuatan otot lengan dan bahu tanpa berpindah posisi.', video: [{judul: 'Mendorong Tembok Khayalan'}, {judul: 'Saling Dorong Telapak Tangan'}, {judul: 'Permainan Mendorong Bola Besar'}] },
     { id_materi: 'N5', nama_materi: 'Menarik', instruksi: 'Lakukan gerakan menarik tali atau menarik lengan pasangan secara perlahan.', tujuan: 'Siswa dapat melatih kekuatan otot punggung dan lengan melalui tarikan.', video: [{judul: 'Tarik Tambang Duduk'}, {judul: 'Saling Tarik Tangan Berpasangan'}, {judul: 'Permainan Tarik Beban Ringan'}] },
     { id_materi: 'N6', nama_materi: 'Keseimbangan', instruksi: 'Berdirilah menggunakan satu kaki sambil merentangkan kedua tangan.', tujuan: 'Siswa mampu mempertahankan pusat gravitasi tubuh (keseimbangan statis).', video: [{judul: 'Permainan Bangau Berdiri 1 Kaki'}, {judul:'Keseimbangan Sikap Pesawat Terbang'}, {judul: 'Menahan Benda di Atas Kepala'}] }
-];
+];*/
 
 let currentMateriId = null;
 let tempAbsen = {}; 
