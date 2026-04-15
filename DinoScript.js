@@ -217,7 +217,7 @@ function pilihSubMateri(id, index){
         htmlVideo += `
         <div class="content-box">
             <p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Video ${i+1}: ${v}</p>
-            <div style="height:140px; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
+            <div style="height:auto; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
                 <video style="width:100%; aspect-ratio: 4/3;" controls>
                     <source src="video/${v}" type="video/mp4" />
                     Your browser doesn't support this feature.
@@ -230,7 +230,7 @@ function pilihSubMateri(id, index){
         htmlVideo += `
         <div class="content-box">
             <p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Animasi masih dalam proses produksi.</p>
-            <div style="height:140px; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
+            <div style="height:auto; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
                 <video style="width:100%; aspect-ratio: 4/3;" controls>
                     <source src="video/maaf.mp4" type="video/mp4" />
                     Your browser doesn't support this feature.
