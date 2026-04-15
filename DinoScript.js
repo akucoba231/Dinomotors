@@ -159,7 +159,7 @@ function pilihMateri(id) {
     document.getElementById('judulVideoMateri').innerText = "Video " + materi.nama_materi;
     let htmlVideo = '';
     materi.video.forEach((v, i) => {
-        htmlVideo += `<div class="content-box"><p style="font-weight:900; color:#2E7D32; margin-top:0;">🎥 Video ${i+1}: ${v.judul}</p><div style="height:140px; background:#E8F5E9; color:#4CAF50; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #81C784;">[Player Video]</div></div>`;
+        htmlVideo += `<div class="content-box"><p style="font-weight:900; color:#2E7D32; margin-top:0;">🎥 Video ${i+1}: ${v.judul}</p><div style="height:auto; background:#E8F5E9; color:#4CAF50; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #81C784;">[Player Video]</div></div>`;
     });
     document.getElementById('containerVideo').innerHTML = htmlVideo;
     renderAbsensi(); nav('page-absen');
