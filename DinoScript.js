@@ -27,6 +27,7 @@ let tempAbsen = {};
 let tempDinilaiSesiIni = {}; // Kunci sesi agar tidak dobel klik
 let tempSiswaAktifId = null; 
 let tempUmpanBalikAktif = null;
+let tmpPermainan = null;
 
 // Fungsi untuk mendapatkan Waktu Spesifik
 function getWaktuSekarang() {
@@ -142,6 +143,9 @@ function renderGridMateri() {
     });
 }
 
+
+// asli
+/*
 function pilihMateri(id) {
     currentMateriId = id; 
     tempAbsen = {}; 
@@ -154,6 +158,59 @@ function pilihMateri(id) {
     let htmlVideo = '';
     materi.video.forEach((v, i) => {
         htmlVideo += `<div class="content-box"><p style="font-weight:900; color:#2E7D32; margin-top:0;">🎥 Video ${i+1}: ${v.judul}</p><div style="height:140px; background:#E8F5E9; color:#4CAF50; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #81C784;">[Player Video]</div></div>`;
+    });
+    document.getElementById('containerVideo').innerHTML = htmlVideo;
+    renderAbsensi(); nav('page-absen');
+}*/
+
+function pilihMateri(id) {
+    currentMateriId = id; 
+    tempAbsen = {}; 
+    tempDinilaiSesiIni = {}; 
+    
+    const materi = dataMateri.find(m => m.id_materi === id);
+    // buat halaman baru untuk render sub materi (opsi permainan)
+    let subMateri = document.getElementById('opsiPermainan');
+    subMateri.innerHTML = "";
+
+    materi.permainan.forEach((sub,index) => {
+        subMateri.innerHTML += `
+        <button class="btn-opsi" type="button" onclick="pilihSubMateri('${id}', ${index})">${sub.nama_permainan}</button>
+        `;  
+    })
+
+    nav('page-permainan');
+
+}
+
+function pilihSubMateri(id, index){
+    const materi = dataMateri.find(m => m.id_materi === id);
+
+    tmpPermainan = materi.permainan[index].nama_permainan;
+
+    let instruksiJoin = materi.permainan[index].instruksi.join(' ');
+    if(instruksiJoin.length <= 0){
+        instruksiJoin = "Ikuti aba-aba dan arahan dari Guru."
+    }
+    document.getElementById('teksInstruksi').innerText = instruksiJoin;
+
+    let tmpTujuan = materi.permainan[index].tujuan;
+    if(tmpTujuan.length <= 0){
+        tmpTujuan = `Tujuan pembelajaran dari permainan adalah melakukan latihan gerak manipulatif "${materi.nama_materi}."`;
+    }
+    document.getElementById('teksTujuan').innerText = tmpTujuan;
+    document.getElementById('judulVideoMateri').innerText = "Video " + tmpPermainan;
+    // untuk langkah permainan
+    let tmpLangkah = '';
+    materi.permainan[index].langkah.forEach((desk,index) => {
+        tmpLangkah += `<p class="item-langkah">${index+1}. ${desk}</p>`;
+    }) //array
+
+    document.getElementById('langkahMateri').innerHTML = tmpLangkah;
+
+    let htmlVideo = '';
+    materi.permainan[index].video.forEach((v, i) => {
+        htmlVideo += `<div class="content-box"><p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Video ${i+1}: ${v.judul}</p><div style="height:140px; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">[Player Video]</div></div>`;
     });
     document.getElementById('containerVideo').innerHTML = htmlVideo;
     renderAbsensi(); nav('page-absen');
