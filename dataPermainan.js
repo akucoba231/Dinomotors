@@ -7,7 +7,7 @@ const permainan = [
       "Musik diputar, anak bebas bergerak di tempat (mengayun tangan, memutar badan, dll).",
       "Saat musik berhenti, semua harus diam seperti patung."
     ],
-    video: [],
+    video: ["mematung_480p.mp4"],
     tag: ["Menekuk", "Memutar", "Mengayun", "Keseimbangan"]
   },
   {
