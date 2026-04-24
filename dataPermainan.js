@@ -18,7 +18,7 @@ const permainan = [
       "Guru atau satu anak jadi pemimpin.",
       "Anak lain menirukan gerakan tanpa berpindah tempat."
     ],
-    video: [],
+    video: ["ikuti_saya_480p.mp4"],
     tag: ["Menekuk", "Memutar", "Meregang"]
   },
   {
