@@ -29,7 +29,7 @@ const permainan = [
       "Instruksi hanya dilakukan jika diawali 'Simon says'.",
       "Kalau tidak, yang bergerak dianggap salah."
     ],
-    video: [],
+    video: ["simon_says_480p.mp4"],
     tag: ["Menekuk", "Memutar", "Meregang"]
   },
   {
