@@ -41,7 +41,7 @@ const permainan = [
       "Teman lain menebak."
     ],
     video: [],
-    tag: ["Memutar", "Mengayun", "Meregang"]
+    tag: ["Memutar", "Mengayun", "Meregang","Menekuk"]
   },
   {
     nama_permainan: "Keseimbangan Satu Kaki",
