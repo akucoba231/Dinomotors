@@ -51,7 +51,7 @@ const permainan = [
       "Anak berdiri dengan satu kaki selama mungkin.",
       "Bisa dibuat lomba."
     ],
-    video: [],
+    video: ["keseimbangan.mp4"],
     tag: ["Keseimbangan"]
   }
 ];
