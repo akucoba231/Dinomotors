@@ -40,7 +40,7 @@ const permainan = [
       "Satu anak memperagakan gerakan di tempat.",
       "Teman lain menebak."
     ],
-    video: [],
+    video: ["tebak_gerakan.mp4"],
     tag: ["Memutar", "Mengayun", "Meregang","Menekuk"]
   },
   {
