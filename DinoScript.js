@@ -1,7 +1,6 @@
 let dataSiswa = [];
 let dataPenilaian = [];
 
-// Menggunakan key khusus untuk Dinomotors
 try {
     const savedSiswa = localStorage.getItem('dinoSiswa');
     if(savedSiswa) dataSiswa = JSON.parse(savedSiswa);
@@ -12,31 +11,29 @@ try {
     if(savedNilai) dataPenilaian = JSON.parse(savedNilai);
 } catch(e) { localStorage.removeItem('dinoPenilaian'); }
 
-// MATERI NON-LOKOMOTOR
-/*
-const dataMateri = [
-    { id_materi: 'N1', nama_materi: 'Menekuk', instruksi: 'Lakukan gerakan menekuk lutut atau siku tubuh tanpa berpindah tempat.', tujuan: 'Siswa mampu melatih kelenturan persendian melalui gerakan menekuk.', video: [{judul: 'Permainan Pohon Tertiup Angin'}, {judul: 'Variasi Jongkok Berdiri'}, {judul: 'Menekuk Lutut Memeluk Kaki'}] },
-    { id_materi: 'N2', nama_materi: 'Memutar', instruksi: 'Putar bagian tubuh seperti lengan, pinggang, atau leher secara perlahan.', tujuan: 'Siswa dapat meningkatkan rentang gerak sendi melalui putaran.', video: [{judul: 'Permainan Baling-baling Helikopter'}, {judul: 'Memutar Simpai di Pinggang'}, {judul: 'Estafet Bola Sambil Memutar Tubuh'}] },
-    { id_materi: 'N3', nama_materi: 'Mengayun', instruksi: 'Ayunkan kedua lengan atau kaki ke depan dan ke belakang secara bergantian.', tujuan: 'Siswa mampu mengontrol ritme dan keluwesan otot melalui ayunan.', video: [{judul: 'Permainan Jam Bandul'}, {judul: 'Mengayun Lengan Berpasangan'}, {judul: 'Ayunan Kaki Setengah Lingkaran'}] },
-    { id_materi: 'N4', nama_materi: 'Mendorong', instruksi: 'Lakukan gerakan mendorong sebuah objek diam atau telapak tangan teman.', tujuan: 'Siswa melatih kekuatan otot lengan dan bahu tanpa berpindah posisi.', video: [{judul: 'Mendorong Tembok Khayalan'}, {judul: 'Saling Dorong Telapak Tangan'}, {judul: 'Permainan Mendorong Bola Besar'}] },
-    { id_materi: 'N5', nama_materi: 'Menarik', instruksi: 'Lakukan gerakan menarik tali atau menarik lengan pasangan secara perlahan.', tujuan: 'Siswa dapat melatih kekuatan otot punggung dan lengan melalui tarikan.', video: [{judul: 'Tarik Tambang Duduk'}, {judul: 'Saling Tarik Tangan Berpasangan'}, {judul: 'Permainan Tarik Beban Ringan'}] },
-    { id_materi: 'N6', nama_materi: 'Keseimbangan', instruksi: 'Berdirilah menggunakan satu kaki sambil merentangkan kedua tangan.', tujuan: 'Siswa mampu mempertahankan pusat gravitasi tubuh (keseimbangan statis).', video: [{judul: 'Permainan Bangau Berdiri 1 Kaki'}, {judul:'Keseimbangan Sikap Pesawat Terbang'}, {judul: 'Menahan Benda di Atas Kepala'}] }
-];
-*/
-
 let currentMateriId = null;
 let tempAbsen = {}; 
-let tempDinilaiSesiIni = {}; // Kunci sesi agar tidak dobel klik
+let tempDinilaiSesiIni = {}; 
 let tempSiswaAktifId = null; 
 let tempUmpanBalikAktif = null;
 let tmpPermainan = null;
+let kelasAktifSesiIni = "";
+let dataGuru = null;
 
-// Fungsi untuk mendapatkan Waktu Spesifik
+// ==========================================
+// FUNGSI UMUM & MODAL PANDUAN
+// ==========================================
+
 function getWaktuSekarang() {
     const now = new Date();
     const tgl = now.toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'});
     const jam = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
     return `${tgl} ${jam}`;
+}
+
+function tanggalSekarang(){
+  let dt = new Date();
+  return `${dt.getDate()}-${dt.getMonth()}-${dt.getFullYear()}`;
 }
 
 function nav(targetId) {
@@ -47,44 +44,218 @@ function nav(targetId) {
     if(targetId === 'page-evaluasi') renderTabelEvaluasi();
 }
 
-function showModal(title, message) {
+// Upgrade Modal dengan isHTML
+function showModal(title, message, isHTML = false) {
     document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modalBody').innerText = message;
+    const modalBody = document.getElementById('modalBody');
+    if(isHTML) {
+        modalBody.innerHTML = message;
+    } else {
+        modalBody.innerText = message;
+    }
     document.getElementById('globalModal').style.display = 'flex';
 }
+
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-function prosesLogin() {
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
-    if(user === 'admin' && pass === 'admin') {
-        document.getElementById('username').value = ''; document.getElementById('password').value = '';
-        nav('page-data-siswa');
-    } else { showModal("Login Gagal!", "Username atau password salah."); }
+function bukaKonfirmasi(pesan, teksTombol, callbackAksi) {
+    document.getElementById('confirmBody').innerText = pesan;
+    const btn = document.getElementById('confirmActionBtn');
+    btn.innerText = teksTombol; 
+    btn.onclick = function() {
+        closeModal('confirmModal');
+        callbackAksi();
+    };
+    document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function konfirmasiKembali(targetPage, message) {
+    bukaKonfirmasi(message, "Ya, Kembali", function() {
+        nav(targetPage);
+    });
+}
+
+// FUNGSI PANDUAN ON-DEMAND
+function tampilkanPanduan(halaman) {
+    let judul = "Panduan Aplikasi";
+    let pesan = "";
+    
+    switch(halaman) {
+        case 'login':
+            judul = "Panduan Profil Guru";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Data Profil (Nama, NIP, Sekolah) yang Anda masukkan di sini akan <b>otomatis tercetak sebagai Kop/Header pada file laporan Excel</b>.</li><li style='margin-top:10px;'>Anda tidak perlu mengetik ulang setiap kali mengekspor laporan.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+        case 'siswa':
+            document.getElementById('panduanSiswaModal').style.display = 'flex';
+            break;
+        case 'materi':
+            judul = "Panduan Pembelajaran";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Silakan pilih <b>Unit Gerak</b> dan <b>Permainan</b>.</li><li style='margin-top:10px;'>Alur berjalan lurus: <b>Pilih Materi ➔ Instruksi & Video ➔ Absensi ➔ Penilaian</b>.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+        case 'absen':
+            judul = "Panduan Sesi Kelas";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Halaman ini menggunakan <b>Kunci Sesi (Session Lock)</b>.</li><li style='margin-top:10px;'>Anda <b>wajib memilih kelas</b> di dropdown terlebih dahulu agar daftar siswa muncul.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+        // ...
+        case 'penilaian':
+            judul = "Panduan Penilaian";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Gunakan tombol umpan balik di bawah nama siswa untuk melakukan penilaian.</li><li>Sebuah form akan muncul, masukan nilai siswa dan catatan (opsional), lalu tekan simpan.</li><li>Tombol nilai <b>akan terkunci otomatis</b> setelah siswa dinilai.</li><li style='margin-top:10px;'>Hal ini untuk mencegah data masuk ganda (dobel) pada satu sesi yang sama. Jika ada salah klik, Anda bisa menghapusnya di Rincian Evaluasi.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+        // ...
+        case 'evaluasi':
+            judul = "Panduan Ekspor Evaluasi";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Tabel menggunakan format <b>Buku Nilai</b> dengan rata-rata dinamis.</li><li style='margin-top:10px;'>Tombol <b>Export Excel</b> digunakan untuk mengunduh data evaluasi penilaian siswa.</li><li>Anda bisa menggunakan <b>Filter Kelas</b> untuk memilah hanya siswa kelas tertentu yang akan diunduh.</li><li style='margin-top:10px;'>Anda bisa melihat rincian penilaian siswa dengan menggeser tabel ke kanan, lalu menekan tombol <b>rincian</b>.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+        case 'rincian':
+            judul = "Panduan Koreksi Riwayat";
+            pesan = "<ul style='text-align:left; margin:0; padding-left:20px;'><li>Klik nama unit gerak untuk melihat riwayat.</li><li style='margin-top:10px;'>Jika ada salah klik atau ingin menghapus <b>nilai percobaan awal yang buruk</b>, klik tanda silang (❌) untuk menghapusnya, nilai rata-rata siswa akan di- <i>update</i>.</li></ul>";
+            showModal(judul, pesan, true);
+            break;
+    }
+}
+
+// Generate Dummy Excel File
+function downloadTemplateSiswa() {
+    const ws_data = [
+        ["No Abs", "Nama Siswa", "NISN", "JK", "Kelas", "Sekolah"],
+        [1, "Andi Budi", "0012345678", "L", "7A", "SDN 1 Contoh"],
+        [2, "Siti Aminah", "0087654321", "P", "7A", "SDN 1 Contoh"]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    ws['!cols'] = [{wpx: 40}, {wpx: 150}, {wpx: 100}, {wpx: 50}, {wpx: 60}, {wpx: 150}];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template Siswa");
+    XLSX.writeFile(wb, "Template_Import_Siswa_Dinomotors.xlsx");
+}
+
+// ==========================================
+// FITUR PROFIL GURU & BREADCRUMB
+// ==========================================
+
+function initDataGuru() {
+    try {
+        const saved = localStorage.getItem('dino-guru');
+        if(saved) {
+            dataGuru = JSON.parse(saved);
+            if(document.getElementById('inputNamaGuru')) document.getElementById('inputNamaGuru').value = dataGuru.nama || '';
+            if(document.getElementById('inputNIP')) document.getElementById('inputNIP').value = dataGuru.nip || '';
+            if(document.getElementById('inputSekolahGuru')) document.getElementById('inputSekolahGuru').value = dataGuru.sekolah || '';
+            renderBreadcrumbs();
+        }
+    } catch(e) { console.warn("Data guru tidak terbaca:", e); }
+}
+
+function simpanDataGuru() {
+    const nama = document.getElementById('inputNamaGuru').value;
+    const nip = document.getElementById('inputNIP').value;
+    const sekolah = document.getElementById('inputSekolahGuru').value;
+
+    if(!nama || !sekolah) { showModal("Peringatan!", "Nama Guru dan Asal Sekolah wajib diisi."); return; }
+
+    dataGuru = { nama: nama, nip: nip, sekolah: sekolah };
+    localStorage.setItem('dino-guru', JSON.stringify(dataGuru));
+    sessionStorage.setItem('tempSekolahDino', sekolah); 
+
+    renderBreadcrumbs();
+    nav('page-data-siswa');
+}
+
+function renderBreadcrumbs() {
+    if(!dataGuru) return;
+    const pages = document.querySelectorAll('.page:not(#page-home):not(#page-login)');
+    
+    pages.forEach(page => {
+        let bc = page.querySelector('.guru-breadcrumb');
+        if(!bc) {
+            bc = document.createElement('div');
+            bc.className = 'guru-breadcrumb';
+            const logo = page.querySelector('.logo-image');
+            if(logo) { logo.insertAdjacentElement('afterend', bc); }
+        }
+        const textNIP = dataGuru.nip ? `(NIP. ${dataGuru.nip})` : '(NIP. -)';
+        bc.innerHTML = `
+            <div class="guru-nama">${dataGuru.nama}</div>
+            <div class="guru-nip">${textNIP}</div>
+        `;
+        bc.style.display = 'block'; 
+    });
+}
+initDataGuru();
+
+// ==========================================
+// FITUR DATA SISWA & IMPORT
+// ==========================================
+
+function updateDropdownFilterKelas() {
+    const selectFilter = document.getElementById('filterKelasTabel');
+    if(!selectFilter) return;
+    const currentValue = selectFilter.value;
+    const kelasUnik = [...new Set(dataSiswa.map(s => s.kelas).filter(k => k))].sort();
+    
+    let htmlOptions = '<option value="">Semua Kelas</option>';
+    kelasUnik.forEach(k => { htmlOptions += `<option value="${k}">${k}</option>`; });
+    selectFilter.innerHTML = htmlOptions;
+    if(kelasUnik.includes(currentValue)) selectFilter.value = currentValue;
+}
+
+function terapkanFilterKelas() {
+    const nilaiFilter = document.getElementById('filterKelasTabel').value;
+    const table = $('#tabelSiswa').DataTable();
+    if(nilaiFilter) {
+        table.column(4).search('^' + nilaiFilter + '$', true, false).draw();
+    } else {
+        table.column(4).search('').draw(); 
+    }
 }
 
 function renderTabelSiswa() {
+    if ($.fn.DataTable.isDataTable('#tabelSiswa')) {
+        $('#tabelSiswa').DataTable().destroy();
+    }
     const tbody = document.querySelector('#tabelSiswa tbody'); tbody.innerHTML = '';
-    if(dataSiswa.length === 0) { tbody.innerHTML = '<tr><td colspan="3">Belum ada data</td></tr>'; return; }
-    dataSiswa.forEach((siswa, index) => {
+    dataSiswa.forEach(siswa => {
         tbody.innerHTML += `<tr>
-            <td>${index + 1}</td>
+            <td style="font-weight:900; color:#2E7D32;">${siswa.absen}</td>
             <td style="text-align:left;">${siswa.nama_siswa}</td>
+            <td>${siswa.nisn || '-'}</td>
+            <td style="font-weight:900;">${siswa.jk || '-'}</td>
+            <td>${siswa.kelas}</td>
+            <td>${siswa.sekolah}</td>
             <td>
-                <button class="btn-info" style="padding: 6px 10px; font-size:11px; margin-bottom:4px;" onclick="bukaUbahSiswa('${siswa.id_siswa}')">Ubah</button>
-                <button class="btn-danger" style="padding: 6px 10px; font-size:11px;" onclick="hapusSiswa('${siswa.id_siswa}')">Hapus</button>
+                <button class="btn-info" style="padding: 4px 8px; font-size:10px; margin-right:2px;" onclick="bukaUbahSiswa('${siswa.id_siswa}')">Ubah</button>
+                <button class="btn-danger" style="padding: 4px 8px; font-size:10px;" onclick="hapusSiswa('${siswa.id_siswa}')">Hapus</button>
             </td>
         </tr>`;
     });
+
+    updateDropdownFilterKelas();
+
+    $('#tabelSiswa').DataTable({
+        "order": [[0, "asc"]], "scrollX": true, "pageLength": 10, "lengthChange": false, 
+        "language": {
+            "search": "Cari:", "zeroRecords": "Tidak ada data siswa ditemukan", "info": "Hal _PAGE_ dari _PAGES_",
+            "infoEmpty": "Tidak ada data", "infoFiltered": "(dari _MAX_ total data)",
+            "paginate": { "next": "➔", "previous": "⬅" }
+        }
+    });
+    terapkanFilterKelas();
 }
 
 function bukaFormTambahSiswa() {
     document.getElementById('formSiswaTitle').innerText = "Tambahkan Siswa";
     document.getElementById('inputIdSiswa').value = '';
-    document.getElementById('inputNama').value = '';
-    document.getElementById('inputKelas').value = '';
     document.getElementById('inputAbsen').value = '';
-    document.getElementById('inputSekolah').value = sessionStorage.getItem('tempSekolahDino') || '';
+    document.getElementById('inputNama').value = '';
+    document.getElementById('inputNISN').value = '';
+    document.getElementsByName('inputJK').forEach(r => r.checked = false); 
+    document.getElementById('inputKelas').value = '';
+    const autoSekolah = dataGuru && dataGuru.sekolah ? dataGuru.sekolah : (sessionStorage.getItem('tempSekolahDino') || '');
+    document.getElementById('inputSekolah').value = autoSekolah;
     nav('page-form-siswa');
 }
 
@@ -93,28 +264,40 @@ function bukaUbahSiswa(id) {
     if(siswa) {
         document.getElementById('formSiswaTitle').innerText = "Ubah Data Siswa";
         document.getElementById('inputIdSiswa').value = siswa.id_siswa;
-        document.getElementById('inputNama').value = siswa.nama_siswa;
-        document.getElementById('inputKelas').value = siswa.kelas;
         document.getElementById('inputAbsen').value = siswa.absen;
+        document.getElementById('inputNama').value = siswa.nama_siswa;
+        document.getElementById('inputNISN').value = siswa.nisn || '';
+        document.getElementById('inputKelas').value = siswa.kelas;
         document.getElementById('inputSekolah').value = siswa.sekolah;
+        
+        const jk = siswa.jk || '';
+        document.getElementsByName('inputJK').forEach(r => { r.checked = (r.value === jk); });
         nav('page-form-siswa');
     }
 }
 
 function simpanSiswa() {
     const id = document.getElementById('inputIdSiswa').value;
-    const nama = document.getElementById('inputNama').value;
-    const kelas = document.getElementById('inputKelas').value;
     const absen = document.getElementById('inputAbsen').value;
+    const nama = document.getElementById('inputNama').value;
+    const nisn = document.getElementById('inputNISN').value;
+    const kelas = document.getElementById('inputKelas').value;
     const sekolah = document.getElementById('inputSekolah').value;
+    
+    let jk = '';
+    document.getElementsByName('inputJK').forEach(r => { if(r.checked) jk = r.value; });
 
-    if(!nama || !kelas || !absen || !sekolah) { showModal("Peringatan", "Semua data wajib diisi!"); return; }
+    if(!absen || !nama || !nisn || !jk || !kelas || !sekolah) { 
+        showModal("Peringatan", "Semua data wajib diisi, termasuk Jenis Kelamin!"); return; 
+    }
 
     if(id) {
         const index = dataSiswa.findIndex(s => s.id_siswa === id);
-        if(index !== -1) dataSiswa[index] = { id_siswa: id, nama_siswa: nama, kelas: kelas, absen: absen, sekolah: sekolah };
+        if(index !== -1) {
+            dataSiswa[index] = { id_siswa: id, absen: absen, nama_siswa: nama, nisn: nisn, jk: jk, kelas: kelas, sekolah: sekolah };
+        }
     } else {
-        dataSiswa.push({ id_siswa: "S" + Date.now(), nama_siswa: nama, kelas: kelas, absen: absen, sekolah: sekolah });
+        dataSiswa.push({ id_siswa: "S" + Date.now(), absen: absen, nama_siswa: nama, nisn: nisn, jk: jk, kelas: kelas, sekolah: sekolah });
         sessionStorage.setItem('tempSekolahDino', sekolah);
     }
     localStorage.setItem('dinoSiswa', JSON.stringify(dataSiswa));
@@ -122,138 +305,167 @@ function simpanSiswa() {
 }
 
 function hapusSiswa(id) {
-    if(confirm("Hapus siswa ini?")) {
+    bukaKonfirmasi("Yakin ingin menghapus data siswa ini beserta seluruh riwayat nilainya?", "Ya, Hapus", function() {
         dataSiswa = dataSiswa.filter(s => s.id_siswa !== id);
         dataPenilaian = dataPenilaian.filter(p => p.id_siswa !== id);
         localStorage.setItem('dinoSiswa', JSON.stringify(dataSiswa));
         localStorage.setItem('dinoPenilaian', JSON.stringify(dataPenilaian));
         renderTabelSiswa();
-    }
+    });
 }
+
+function prosesImportExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: false});
+        if (jsonData.length === 0) { showModal("Gagal", "File Excel kosong atau format tidak dikenali."); return; }
+
+        let jumlahBerhasil = 0;
+        const autoSekolah = dataGuru && dataGuru.sekolah ? dataGuru.sekolah : (sessionStorage.getItem('tempSekolahDino') || '');
+
+        jsonData.forEach(row => {
+            const getVal = (possibleKeys) => {
+                const key = Object.keys(row).find(k => possibleKeys.includes(k.toLowerCase().trim()));
+                return key ? String(row[key]).trim() : '';
+            };
+
+            const absen = getVal(['no', 'no.', 'no abs', 'absen', 'no absen', 'nomor']);
+            const nama = getVal(['nama', 'nama siswa', 'nama lengkap']);
+            const nisn = getVal(['nisn', 'no induk']);
+            const jk = getVal(['jk', 'j/k', 'jenis kelamin', 'l/p']);
+            const kelas = getVal(['kelas', 'kls']);
+            const sekolah = getVal(['sekolah', 'asal sekolah']) || autoSekolah;
+
+            if (nama && kelas) {
+                dataSiswa.push({
+                    id_siswa: "S" + Date.now() + Math.floor(Math.random() * 10000),
+                    absen: absen || '-', nama_siswa: nama, nisn: nisn || '-',
+                    jk: jk ? jk.substring(0, 1).toUpperCase() : '-', kelas: kelas, sekolah: sekolah
+                });
+                jumlahBerhasil++;
+            }
+        });
+
+        if(jumlahBerhasil > 0) {
+            localStorage.setItem('dinoSiswa', JSON.stringify(dataSiswa));
+            renderTabelSiswa(); 
+            showModal("Sukses", `${jumlahBerhasil} data siswa berhasil diimpor!`);
+        } else {
+            showModal("Peringatan", "Tidak ada data yang valid dimasukkan. Pastikan kolom 'Nama' dan 'Kelas' tersedia di Excel.");
+        }
+        event.target.value = ''; 
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// ==========================================
+// ALUR MATERI & ABSENSI
+// ==========================================
 
 function renderGridMateri() {
     const container = document.getElementById('gridMateriContainer'); container.innerHTML = '';
     dataMateri.forEach(m => { 
         container.innerHTML += `
         <div class="card-materi" onclick="pilihMateri('${m.id_materi}')">
-            <div class="icon-box">
-            <img alt="unit-gerak" src="assets/${m.nama_materi}.png" />
-            </div>
+            <div class="icon-box"><img alt="unit-gerak" src="assets/${m.nama_materi}.png" /></div>
             <div class="text-box">${m.nama_materi}</div>
             <svg class="check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>`; 
     });
 }
 
-
-// asli
-/*
 function pilihMateri(id) {
-    currentMateriId = id; 
-    tempAbsen = {}; 
-    tempDinilaiSesiIni = {}; 
-    
+    currentMateriId = id; tempAbsen = {}; tempDinilaiSesiIni = {}; 
     const materi = dataMateri.find(m => m.id_materi === id);
-    document.getElementById('teksInstruksi').innerText = materi.instruksi;
-    document.getElementById('teksTujuan').innerText = materi.tujuan;
-    document.getElementById('judulVideoMateri').innerText = "Video " + materi.nama_materi;
-    let htmlVideo = '';
-    materi.video.forEach((v, i) => {
-        htmlVideo += `<div class="content-box"><p style="font-weight:900; color:#2E7D32; margin-top:0;">🎥 Video ${i+1}: ${v.judul}</p><div style="height:auto; background:#E8F5E9; color:#4CAF50; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #81C784;">[Player Video]</div></div>`;
-    });
-    document.getElementById('containerVideo').innerHTML = htmlVideo;
-    renderAbsensi(); nav('page-absen');
-}*/
-
-function pilihMateri(id) {
-    currentMateriId = id; 
-    tempAbsen = {}; 
-    tempDinilaiSesiIni = {}; 
-    
-    const materi = dataMateri.find(m => m.id_materi === id);
-    // buat halaman baru untuk render sub materi (opsi permainan)
     let subMateri = document.getElementById('opsiPermainan');
     subMateri.innerHTML = "";
-
     materi.permainan.forEach((sub,index) => {
-        subMateri.innerHTML += `
-        <button class="btn-opsi" type="button" onclick="pilihSubMateri('${id}', ${index})">${sub.nama_permainan}</button>
-        `;  
-    })
-
+        subMateri.innerHTML += `<button class="btn-opsi" type="button" onclick="pilihSubMateri('${id}', ${index})">${sub.nama_permainan}</button>`;  
+    });
     nav('page-permainan');
-
 }
 
 function pilihSubMateri(id, index){
     const materi = dataMateri.find(m => m.id_materi === id);
-
     tmpPermainan = materi.permainan[index].nama_permainan;
 
     let instruksiJoin = materi.permainan[index].instruksi.join(' ');
-    if(instruksiJoin.length <= 0){
-        instruksiJoin = "Ikuti aba-aba dan arahan dari Guru."
-    }
-    document.getElementById('teksInstruksi').innerText = instruksiJoin;
+    document.getElementById('teksInstruksi').innerText = instruksiJoin.length <= 0 ? "Ikuti aba-aba dan arahan dari Guru." : instruksiJoin;
 
     let tmpTujuan = materi.permainan[index].tujuan;
-    if(tmpTujuan.length <= 0){
-        tmpTujuan = `Tujuan pembelajaran dari permainan adalah melakukan latihan gerak manipulatif "${materi.nama_materi}."`;
-    }
-    document.getElementById('teksTujuan').innerText = tmpTujuan;
+    document.getElementById('teksTujuan').innerText = tmpTujuan.length <= 0 ? `Tujuan pembelajaran dari permainan adalah melakukan latihan gerak manipulatif "${materi.nama_materi}."` : tmpTujuan;
+    
     document.getElementById('judulVideoMateri').innerText = "Video " + tmpPermainan;
-    // untuk langkah permainan
+    
     let tmpLangkah = '';
-    materi.permainan[index].langkah.forEach((desk,index) => {
-        tmpLangkah += `<p class="item-langkah">${index+1}. ${desk}</p>`;
-    }) //array
-
+    materi.permainan[index].langkah.forEach((desk,index) => { tmpLangkah += `<p class="item-langkah">${index+1}. ${desk}</p>`; });
     document.getElementById('langkahMateri').innerHTML = tmpLangkah;
 
     let htmlVideo = '';
-
     if(materi.permainan[index].video.length >=1){
-    materi.permainan[index].video.forEach((v, i) => {
-        htmlVideo += `
-        <div class="content-box">
-            <p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Video Animasi</p>
-            <div style="height:auto; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
-                <video style="width:100%; aspect-ratio: 4/3;" controls>
-                    <source src="video/${v}" type="video/mp4" />
-                    Your browser doesn't support this feature.
-                </video>
-            </div>
-        </div>`;
-    });
-    }
-    else {
+        materi.permainan[index].video.forEach((v, i) => {
+            htmlVideo += `
+            <div class="content-box">
+                <p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Video Animasi</p>
+                <div style="height:auto; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
+                    <video style="width:100%; aspect-ratio: 4/3;" controls><source src="video/${v}" type="video/mp4" />Browser tidak support.</video>
+                </div>
+            </div>`;
+        });
+    } else {
         htmlVideo += `
         <div class="content-box">
             <p style="font-weight:900; color:#C62828; margin-top:0;">🎥 Animasi masih dalam proses produksi.</p>
             <div style="height:auto; background:#FDECEA; color:#C62828; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:15px; border:2px dashed #F8D7DA;">
-                <video style="width:100%; aspect-ratio: 4/3;" controls>
-                    <source src="video/maaf.mp4" type="video/mp4" />
-                    Your browser doesn't support this feature.
-                </video>
+                <video style="width:100%; aspect-ratio: 4/3;" controls><source src="video/maaf.mp4" type="video/mp4" />Browser tidak support.</video>
             </div>
         </div>`;
     }
     document.getElementById('containerVideo').innerHTML = htmlVideo;
+
+    kelasAktifSesiIni = "";
+    const selectKelas = document.getElementById('pilihKelasAbsensi');
+    const kelasUnik = [...new Set(dataSiswa.map(s => s.kelas).filter(k => k))].sort();
+    
+    let htmlOptions = '<option value="">-- Pilih Kelas --</option>';
+    kelasUnik.forEach(k => { htmlOptions += `<option value="${k}">${k}</option>`; });
+    selectKelas.innerHTML = htmlOptions;
+
     renderAbsensi(); nav('page-absen');
+}
+
+function setKelasAktif() {
+    kelasAktifSesiIni = document.getElementById('pilihKelasAbsensi').value;
+    renderAbsensi();
 }
 
 function renderAbsensi() {
     const container = document.getElementById('listAbsensi'); container.innerHTML = '';
+    
     if(dataSiswa.length <= 0){
-        container.innerHTML = `
-        <div class="illustration-area">
-            <img class="login-icon" src="assets/empty.png" alt="aktor-siswa-kosong">
-        </div>
-            <p class="kembali" style="font-size:1.2em;">Data siswa tidak ditemukan</p>
-            <button class="btn-warning" onclick="nav('page-data-siswa')">Isi Data Siswa</button>
-        `;
+        container.innerHTML = `<div class="illustration-area"><img class="login-icon" src="assets/empty.png" alt="aktor-siswa-kosong"></div><p class="kembali" style="font-size:1.2em; color:#4A4A4A;">Data siswa tidak ditemukan</p><button class="btn-warning" onclick="nav('page-data-siswa')">Isi Data Siswa</button>`;
+        return;
     }
-    dataSiswa.forEach(siswa => {
+
+    if(!kelasAktifSesiIni) {
+        container.innerHTML = `<p style="font-weight:700; color:#fff; text-align:center; margin-top:20px; text-shadow: 2px 2px #000; letter-spacing: 1px; font-size: 1.2em;">Silakan pilih kelas terlebih dahulu untuk memulai sesi absensi.</p>`;
+        return;
+    }
+
+    const siswaKelasIni = dataSiswa.filter(s => s.kelas === kelasAktifSesiIni);
+    if(siswaKelasIni.length === 0) {
+         container.innerHTML = `<p style="font-weight:700; color:#E53935; text-align:center; margin-top:20px;">Tidak ada siswa di kelas ini.</p>`; return;
+    }
+
+    siswaKelasIni.forEach(siswa => {
         const status = tempAbsen[siswa.id_siswa] || 'Belum diabsen';
         const isDiabsen = tempAbsen[siswa.id_siswa] ? 'disabled' : '';
         
@@ -270,47 +482,35 @@ function renderAbsensi() {
 function simpanAlasanAbsen() { 
     const alasan = document.getElementById('alasanAbsen').value;
     tempAbsen[tempSiswaAktifId] = alasan; 
-
-    // Simpan otomatis ke database riwayat (nilai 0)
     dataPenilaian.push({
         id_penilaian: "P" + Date.now() + Math.floor(Math.random()*100),
-        tanggal: getWaktuSekarang(),
-        id_siswa: tempSiswaAktifId,
-        id_materi: currentMateriId,
-        kehadiran: alasan,
-        nilai: 0, 
-        umpan_balik: "Otomatis: Siswa " + alasan
+        tanggal: getWaktuSekarang(), id_siswa: tempSiswaAktifId, id_materi: currentMateriId,
+        kehadiran: alasan, nilai: 0, umpan_balik: "Otomatis: Siswa " + alasan
     });
     localStorage.setItem('dinoPenilaian', JSON.stringify(dataPenilaian));
-    
-    // Kunci tombol khusus di sesi ini
     tempDinilaiSesiIni[tempSiswaAktifId] = true;
-
-    closeModal('absenModal'); 
-    renderAbsensi(); 
+    closeModal('absenModal'); renderAbsensi(); 
 }
+
+// ==========================================
+// PENILAIAN SISWA
+// ==========================================
 
 function mulaiPenilaian() { renderPenilaian(); nav('page-penilaian'); }
 
-// ====== FUNGSI RENDER PENILAIAN YANG SUDAH DITAMBAHKAN LOGIKA RIWAYAT ======
 function renderPenilaian() {
     const btnSelesai = document.getElementById('btn-selesai-nilai');
-    if(btnSelesai.hasAttribute('disabled')){
-        btnSelesai.removeAttribute('disabled');
-    }
+    if(btnSelesai.hasAttribute('disabled')) btnSelesai.removeAttribute('disabled');
     const container = document.getElementById('listPenilaian'); container.innerHTML = '';
     
-    if(dataSiswa.length <= 0){
-        container.innerHTML = `
-        <div class="illustration-area">
-            <img class="login-icon" src="assets/empty.png" alt="aktor-siswa-kosong">
-        </div>
-            <p class="kembali">Data siswa tidak ditemukan</p>
-            <button class="btn-warning" onclick="nav('page-data-siswa')">Isi Data Siswa</button>
-        `;
+    if(dataSiswa.length <= 0 || !kelasAktifSesiIni){
+        container.innerHTML = `<div class="illustration-area"><img class="login-icon" src="assets/empty.png" alt="aktor-siswa-kosong"></div><p class="kembali" style="color:#4A4A4A; cursor:default;">Data siswa / kelas belum siap</p><button class="btn-warning" onclick="nav('page-absen')">Kembali ke Absensi</button>`;
+        return;
     }
 
-    dataSiswa.forEach(siswa => {
+    const siswaKelasIni = dataSiswa.filter(s => s.kelas === kelasAktifSesiIni);
+
+    siswaKelasIni.forEach(siswa => {
         const kehadiran = tempAbsen[siswa.id_siswa] || 'Hadir';
         const isHadir = kehadiran === 'Hadir';
         const isDinilai = tempDinilaiSesiIni[siswa.id_siswa]; 
@@ -321,13 +521,12 @@ function renderPenilaian() {
         if (!isHadir) {
             statusText = `<br><span style="color:#E53935; font-size:13px;">✔ Tersimpan Otomatis (Nilai 0)</span>`;
             actionButtons = `<button class="btn-info" disabled style="padding: 6px 10px; font-size:11px; width: 100%; background:#EEEEEE !important; color:#9E9E9E !important;">Data ${kehadiran} Telah Tersimpan</button>`;
-        } 
-        else {
+        } else {
+            // LOGIKA KUNCI TOMBOL DITERAPKAN DI SINI
             if (isDinilai) {
                 statusText = `<br><span style="color:#4CAF50; font-size:13px;">✔ Berhasil Dinilai Sesi Ini</span>`;
                 actionButtons = `<button class="btn-info" disabled style="padding: 6px 10px; font-size:11px; width: 100%; background:#EEEEEE !important; color:#9E9E9E !important;">Tersimpan ke Riwayat</button>`;
-            } 
-            else {
+            } else {
                 actionButtons = `
                     <button class="btn-danger" onclick="bukaModalNilai('${siswa.id_siswa}', '${siswa.nama_siswa}', 'Perbaikan')" style="padding: 6px 10px; font-size:11px;">Perbaikan</button>
                     <button class="btn-warning" onclick="bukaModalNilai('${siswa.id_siswa}', '${siswa.nama_siswa}', 'Cukup')" style="padding: 6px 10px; font-size:11px;">Cukup</button>
@@ -338,9 +537,7 @@ function renderPenilaian() {
 
         container.innerHTML += `<div class="content-box">
             <p style="font-weight:900; margin-top:0; color:#2E7D32; font-size:15px;">${siswa.nama_siswa} <span style="font-size:12px; color:#9E9E9E;">(${kehadiran})</span> ${statusText}</p>
-            <div class="top-buttons" style="margin-bottom:0; gap:5px;">
-                ${actionButtons}
-            </div>
+            <div class="top-buttons" style="margin-bottom:0; gap:5px;">${actionButtons}</div>
         </div>`;
     });
 }
@@ -359,63 +556,154 @@ function simpanNilaiSiswa() {
     const ket = document.getElementById('inputKeteranganNilai').value;
     if(!nilai) { showModal("Peringatan", "Masukkan nilai!"); return; }
 
-    // Simpan ke riwayat dengan id unik dan timestamp
     dataPenilaian.push({
         id_penilaian: "P" + Date.now() + Math.floor(Math.random()*100),
-        tanggal: getWaktuSekarang(),
-        id_siswa: tempSiswaAktifId,
-        id_materi: currentMateriId,
-        kehadiran: tempAbsen[tempSiswaAktifId] || 'Hadir',
-        nilai: parseInt(nilai),
+        tanggal: getWaktuSekarang(), id_siswa: tempSiswaAktifId, id_materi: currentMateriId,
+        kehadiran: tempAbsen[tempSiswaAktifId] || 'Hadir', nilai: parseInt(nilai),
         umpan_balik: tempUmpanBalikAktif + " : " + (ket ? ket : "Tanpa catatan")
     });
     localStorage.setItem('dinoPenilaian', JSON.stringify(dataPenilaian));
-    
-    // Kunci tombol
     tempDinilaiSesiIni[tempSiswaAktifId] = true;
-
-    closeModal('nilaiModal'); 
-    renderPenilaian(); 
+    closeModal('nilaiModal'); renderPenilaian(); 
 }
 
 function selesaiPenilaian() { showModal("Sukses", "Data pembelajaran tersimpan."); nav('page-materi'); }
 
-// FUNGSI EVALUASI (Rata-rata menghitung nilai 0 saat absen)
-function renderTabelEvaluasi() {
-    const tbody = document.querySelector('#tabelEvaluasi tbody'); tbody.innerHTML = '';
-    if(dataSiswa.length === 0) { tbody.innerHTML = '<tr><td colspan="4">Belum ada data</td></tr>'; return; }
+// ==========================================
+// FITUR EVALUASI & EXPORT EXCEL WYSIWYG
+// ==========================================
+
+function getAvgMateri(id_siswa, id_materi) {
+    const riwayat = dataPenilaian.filter(p => p.id_siswa === id_siswa && p.id_materi === id_materi);
+    if(riwayat.length === 0) return '-';
+    return Math.round(riwayat.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayat.length);
+}
+
+function updateDropdownFilterEvaluasi() {
+    const selectFilter = document.getElementById('filterKelasEvaluasi');
+    if(!selectFilter) return;
+    const currentValue = selectFilter.value;
+    const kelasUnik = [...new Set(dataSiswa.map(s => s.kelas).filter(k => k))].sort();
     
-    dataSiswa.forEach((siswa, index) => {
-        // Kalkulasi dari seluruh riwayat (hadir maupun tidak)
+    let htmlOptions = '<option value="">Semua Kelas</option>';
+    kelasUnik.forEach(k => { htmlOptions += `<option value="${k}">${k}</option>`; });
+    selectFilter.innerHTML = htmlOptions;
+    if(kelasUnik.includes(currentValue)) selectFilter.value = currentValue;
+}
+
+function terapkanFilterEvaluasi() {
+    const nilaiFilter = document.getElementById('filterKelasEvaluasi').value;
+    const table = $('#tabelEvaluasi').DataTable();
+    if(nilaiFilter) {
+        table.column(3).search('^' + nilaiFilter + '$', true, false).draw(); 
+    } else {
+        table.column(3).search('').draw();
+    }
+}
+
+function renderTabelEvaluasi() {
+    if ($.fn.DataTable.isDataTable('#tabelEvaluasi')) {
+        $('#tabelEvaluasi').DataTable().destroy();
+    }
+    const tbody = document.querySelector('#tabelEvaluasi tbody'); tbody.innerHTML = '';
+    
+    dataSiswa.forEach(siswa => {
         const riwayatSiswa = dataPenilaian.filter(p => p.id_siswa === siswa.id_siswa);
-        const avgTotal = riwayatSiswa.length > 0 
-            ? Math.round(riwayatSiswa.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayatSiswa.length) 
-            : 0;
+        const avgTotal = riwayatSiswa.length > 0 ? Math.round(riwayatSiswa.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayatSiswa.length) : '-';
+
+        const avgN1 = getAvgMateri(siswa.id_siswa, 'N1'); 
+        const avgN2 = getAvgMateri(siswa.id_siswa, 'N2'); 
+        const avgN3 = getAvgMateri(siswa.id_siswa, 'N3'); 
+        const avgN4 = getAvgMateri(siswa.id_siswa, 'N4'); 
+        const avgN5 = getAvgMateri(siswa.id_siswa, 'N5'); 
 
         tbody.innerHTML += `<tr>
-            <td>${index + 1}</td>
+            <td style="font-weight:900; color:#2E7D32;">${siswa.absen}</td>
             <td style="text-align:left;">${siswa.nama_siswa}</td>
-            <td style="font-weight:900; color:#2E7D32;">${avgTotal}</td>
-            <td><button class="btn-info" style="padding: 6px 12px; font-size:11px;" onclick="bukaRincianEvaluasi('${siswa.id_siswa}')">Rincian</button></td>
+            <td>${siswa.nisn || '-'}</td>
+            <td>${siswa.kelas}</td>
+            <td style="font-weight:900; color:#1B5E20; background:#E8F5E9;">${avgTotal}</td>
+            <td>${avgN1}</td><td>${avgN2}</td><td>${avgN3}</td><td>${avgN4}</td><td>${avgN5}</td>
+            <td><button class="btn-info" style="padding: 4px 10px; font-size:10px;" onclick="bukaRincianEvaluasi('${siswa.id_siswa}')">Rincian</button></td>
         </tr>`;
     });
+
+    updateDropdownFilterEvaluasi();
+
+    $('#tabelEvaluasi').DataTable({
+        "order": [[0, "asc"]], "scrollX": true, "pageLength": 10, "lengthChange": false,
+        "language": {
+            "search": "Cari:", "zeroRecords": "Tidak ada data evaluasi", "info": "Hal _PAGE_ dari _PAGES_",
+            "infoEmpty": "Tidak ada data", "infoFiltered": "(dari _MAX_ total data)",
+            "paginate": { "next": "➔", "previous": "⬅" }
+        }
+    });
+
+    terapkanFilterEvaluasi();
 }
+
+function exportExcel() {
+    if(dataPenilaian.length === 0) { showModal("Gagal", "Belum ada data nilai."); return; }
+    
+    let excelData = [];
+    const namaSekolah = dataGuru && dataGuru.sekolah ? dataGuru.sekolah : "";
+    const namaGuru = dataGuru && dataGuru.nama ? dataGuru.nama : "-";
+    const nipGuru = dataGuru && dataGuru.nip ? dataGuru.nip : "-";
+    
+    const kelasFilter = document.getElementById('filterKelasEvaluasi').value;
+    const textKelas = kelasFilter ? `Filter: Kelas ${kelasFilter}` : "Filter: Semua Kelas";
+    
+    excelData.push([`Evaluasi Hasil Penilaian Aplikasi Dinomotors ${namaSekolah}`.trim()]);
+    excelData.push([`Nama Guru : ${namaGuru}`]);
+    excelData.push([`NIP       : ${nipGuru}`]);
+    excelData.push([textKelas]);
+    excelData.push([]); 
+    excelData.push(["No Abs", "Nama Siswa", "NISN", "Kelas", "Rata-rata Total", "Menekuk", "Memutar", "Mengayun", "Meregang", "Keseimbangan"]);
+    
+    let siswaDiproses = dataSiswa;
+    if(kelasFilter) { siswaDiproses = dataSiswa.filter(s => s.kelas === kelasFilter); }
+    siswaDiproses.sort((a, b) => (Number(a.absen) || 0) - (Number(b.absen) || 0));
+
+    siswaDiproses.forEach(siswa => {
+        const riwayatSiswa = dataPenilaian.filter(p => p.id_siswa === siswa.id_siswa);
+        const avgTotal = riwayatSiswa.length > 0 ? Math.round(riwayatSiswa.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayatSiswa.length) : '-';
+
+        excelData.push([
+            siswa.absen, siswa.nama_siswa, siswa.nisn || '-', siswa.kelas, avgTotal,
+            getAvgMateri(siswa.id_siswa, 'N1'), getAvgMateri(siswa.id_siswa, 'N2'),
+            getAvgMateri(siswa.id_siswa, 'N3'), getAvgMateri(siswa.id_siswa, 'N4'), getAvgMateri(siswa.id_siswa, 'N5')
+        ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+    if(!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push({ s: {r: 0, c: 0}, e: {r: 0, c: 9} });
+    ws['!merges'].push({ s: {r: 1, c: 0}, e: {r: 1, c: 9} });
+    ws['!merges'].push({ s: {r: 2, c: 0}, e: {r: 2, c: 9} });
+    ws['!merges'].push({ s: {r: 3, c: 0}, e: {r: 3, c: 9} });
+    
+    ws['!cols'] = [ {wpx: 40}, {wpx: 160}, {wpx: 80}, {wpx: 60}, {wpx: 100}, {wpx: 70}, {wpx: 70}, {wpx: 70}, {wpx: 70}, {wpx: 80} ];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap Evaluasi");
+    XLSX.writeFile(wb, `Evaluasi_${kelasFilter ? kelasFilter : 'SemuaKelas'}_${namaSekolah ? namaSekolah.replace(/\s+/g, '_') : 'Dinomotors'}.xlsx`);
+}
+
+// ==========================================
+// MANAJEMEN RIWAYAT PENILAIAN
+// ==========================================
 
 function bukaRincianEvaluasi(id_siswa) {
     const siswa = dataSiswa.find(s => s.id_siswa === id_siswa);
     document.getElementById('rincianNamaSiswa').innerText = siswa.nama_siswa;
+    document.getElementById('btnHapusSemuaRiwayat').onclick = function() { hapusSemuaRiwayatSiswa(id_siswa); };
 
-    let totalNilai = 0, materiDinilaiCount = 0, htmlBintang = '';
-
+    let htmlBintang = '';
     dataMateri.forEach(materi => {
         const riwayatMateri = dataPenilaian.filter(p => p.id_siswa === id_siswa && p.id_materi === materi.id_materi);
-        
         let uiBintang = '';
         if(riwayatMateri.length > 0) {
             const avgScore = Math.round(riwayatMateri.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayatMateri.length);
-            totalNilai += avgScore; 
-            materiDinilaiCount++;
-            
             const starCount = Math.round(avgScore / 20);
             uiBintang = '<span class="stars">' + '★'.repeat(starCount) + '☆'.repeat(5 - starCount) + ` (${avgScore})</span>`;
         } else {
@@ -428,17 +716,22 @@ function bukaRincianEvaluasi(id_siswa) {
             </div>`;
     });
 
-    //const rataRataKeseluruhan = materiDinilaiCount > 0 ? Math.round(totalNilai / materiDinilaiCount) : 0;
-    const riwayatSiswa = dataPenilaian.filter(p => p.id_siswa === siswa.id_siswa);
+    const riwayatSiswa = dataPenilaian.filter(p => p.id_siswa === id_siswa);
     const rataRataKeseluruhan = riwayatSiswa.length > 0 ? Math.round(riwayatSiswa.reduce((sum, p) => sum + (Number(p.nilai) || 0), 0) / riwayatSiswa.length) : 0;
     
-    
-    const progressBar = document.getElementById('rincianProgressBar');
-    progressBar.style.width = rataRataKeseluruhan + '%'; 
-    progressBar.innerText = rataRataKeseluruhan + '%';
-
+    document.getElementById('rincianNilaiAngka').innerText = rataRataKeseluruhan;
     document.getElementById('rincianBintangMateri').innerHTML = htmlBintang;
     nav('page-rincian-evaluasi');
+}
+
+function hapusSemuaRiwayatSiswa(id_siswa) {
+    bukaKonfirmasi("PERINGATAN!\n\nAnda yakin ingin menghapus SELURUH riwayat nilai untuk siswa ini? Data tidak dapat dikembalikan.", "Ya, Hapus Semua", function() {
+        dataPenilaian = dataPenilaian.filter(p => p.id_siswa !== id_siswa);
+        localStorage.setItem('dinoPenilaian', JSON.stringify(dataPenilaian));
+        renderTabelEvaluasi(); 
+        bukaRincianEvaluasi(id_siswa); 
+        showModal("Sukses", "Seluruh riwayat nilai siswa berhasil dihapus.");
+    });
 }
 
 function bukaRiwayatMateri(id_siswa, id_materi) {
@@ -448,11 +741,10 @@ function bukaRiwayatMateri(id_siswa, id_materi) {
     const riwayat = dataPenilaian.filter(p => p.id_siswa === id_siswa && p.id_materi === id_materi);
     riwayat.sort((a, b) => b.id_penilaian.localeCompare(a.id_penilaian));
 
-    const tbody = document.getElementById('riwayatBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('riwayatBody'); tbody.innerHTML = '';
     
     if(riwayat.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px;">Belum ada riwayat pembelajaran.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Belum ada riwayat pembelajaran.</td></tr>';
     } else {
         riwayat.forEach(r => {
             const isHadir = r.kehadiran === 'Hadir';
@@ -464,22 +756,19 @@ function bukaRiwayatMateri(id_siswa, id_materi) {
                 <td style="font-weight:${isHadir ? '700' : '900'}">${r.kehadiran}</td>
                 <td style="font-weight:900; color:#2E7D32;">${showNilai}</td>
                 <td style="text-align:left; line-height:1.2;">${r.umpan_balik}</td>
+                <td><button class="btn-danger" style="padding:4px; font-size:10px;" onclick="hapusRiwayatSpesifik('${r.id_penilaian}', '${id_siswa}', '${id_materi}')">❌</button></td>
             </tr>`;
         });
     }
     document.getElementById('riwayatModal').style.display = 'flex';
 }
 
-function exportExcel() {
-    if(dataPenilaian.length === 0) { showModal("Gagal", "Belum ada data nilai."); return; }
-    let csvContent = "data:text/csv;charset=utf-8,No,Nama Siswa,Kelas,No Absen,Sekolah,Materi,Tgl & Jam,Kehadiran,Nilai (1-100),Umpan Balik & Keterangan\n";
-    dataPenilaian.forEach((p, index) => {
-        const siswa = dataSiswa.find(s => s.id_siswa === p.id_siswa) || {};
-        const materi = dataMateri.find(m => m.id_materi === p.id_materi) || {};
-        const row = [index + 1, `"${siswa.nama_siswa||'-'}"`, `"${siswa.kelas||'-'}"`, `"${siswa.absen||'-'}"`, `"${siswa.sekolah||'-'}"`, `"${materi.nama_materi||'-'}"`, `"${p.tanggal}"`, p.kehadiran, p.nilai, `"${p.umpan_balik||'-'}"`].join(",");
-        csvContent += row + "\n";
+function hapusRiwayatSpesifik(id_penilaian, id_siswa, id_materi) {
+    bukaKonfirmasi("Hapus baris penilaian ini?", "Ya, Hapus", function() {
+        dataPenilaian = dataPenilaian.filter(p => p.id_penilaian !== id_penilaian);
+        localStorage.setItem('dinoPenilaian', JSON.stringify(dataPenilaian));
+        renderTabelEvaluasi(); 
+        bukaRiwayatMateri(id_siswa, id_materi); 
+        bukaRincianEvaluasi(id_siswa); 
     });
-    const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "Riwayat_Evaluasi_PJOK_Dinomotors.csv"); document.body.appendChild(link);
-    link.click(); document.body.removeChild(link);
 }
