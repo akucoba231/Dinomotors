@@ -64,3 +64,104 @@
     text-shadow: 0px 0px 3px #fff;
 }
 
+/* Breadcrumb Guru - 2 Baris Truncate */
+.guru-breadcrumb {
+    background: rgba(255, 255, 255, 0.8);
+    border: none; 
+    padding: 8px 15px;
+    border-radius: 8px; 
+    margin: -10px auto 20px auto;
+    width: 100%; 
+    box-sizing: border-box; 
+    display: none; /* Dikontrol via JS */
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.guru-nama {
+    color: #1B5E20;
+    font-size: 14px;
+    font-weight: 900;
+    display: block;
+    line-height: 1.2;
+    /* Efek Truncate khusus baris Nama */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.guru-nip {
+    color: #66BB6A;
+    font-size: 12px;
+    font-weight: 700;
+    display: block;
+    margin-top: 2px;
+    line-height: 1.2;
+    /* Efek Truncate khusus baris NIP */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Styling untuk Radio Button Jenis Kelamin */
+.radio-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    background: #F8FDF8;
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 2px solid #E8F5E9;
+}
+.radio-group label {
+    font-weight: 700;
+    color: #4A4A4A;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    accent-color: #66BB6A; /* Ubah warna default radio button menjadi hijau */
+}
+
+/* Penyesuaian UI DataTables agar tidak merusak tema */
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #1B5E20;
+    font-size: 13px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 4px 10px;
+    border-radius: 8px !important;
+    font-size: 12px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #66BB6A !important;
+    color: white !important;
+    border: none !important;
+}
+/* Styling Angka Rata-Rata Besar di Rincian Evaluasi */
+.nilai-rata-besar {
+    font-size: 56px;
+    font-weight: 900;
+    color: #1B5E20; /* Hijau gelap agar kontras dan jelas */
+    text-align: center;
+    margin: 10px 0 20px 0;
+    line-height: 1;
+    text-shadow: 3px 3px 0px #E8F5E9, -1px -1px 0px #81C784;
+}
+#confirmModal {
+  z-index: 12;
+}
+
+.dataTables_info, .dataTables_paginate, .paging_simple_numbers {
+    background: #fff;
+    padding:  3px 5px;
+    border-radius: 8px !important;
+}
