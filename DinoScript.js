@@ -388,7 +388,7 @@ function pilihMateri(id) {
     let subMateri = document.getElementById('opsiPermainan');
     subMateri.innerHTML = "";
     materi.permainan.forEach((sub,index) => {
-        subMateri.innerHTML += `<button class="btn-opsi" type="button" onclick="pilihSubMateri('${id}', ${index})">${sub.nama_permainan}</button>`;  
+        subMateri.innerHTML += `<button class="btn-opsi" type="button" onclick="pilihSubMateri('${id}', ${index})">${sub.nama_permainan} (${sub.level})</button>`;  
     });
     nav('page-permainan');
 }
