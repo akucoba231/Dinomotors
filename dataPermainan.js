@@ -8,7 +8,8 @@ const permainan = [
       "Saat musik berhenti, semua harus diam seperti patung."
     ],
     video: ["mematung_480p.mp4"],
-    tag: ["Menekuk", "Memutar", "Mengayun", "Keseimbangan"]
+    tag: ["Menekuk", "Berputar", "Mengayun", "Keseimbangan"],
+    level: "Sedang"
   },
   {
     nama_permainan: "Ikuti Gerakanku",
@@ -19,7 +20,8 @@ const permainan = [
       "Anak lain menirukan gerakan tanpa berpindah tempat."
     ],
     video: ["ikuti_saya_1.mp4"],
-    tag: ["Menekuk", "Memutar", "Meregang"]
+    tag: ["Menekuk", "Berputar", "Mengangkat"],
+    level : "Mudah",
   },
   {
     nama_permainan: "Simon Says",
@@ -30,7 +32,8 @@ const permainan = [
       "Kalau tidak, yang bergerak dianggap salah."
     ],
     video: ["simon_says_480p.mp4"],
-    tag: ["Menekuk", "Memutar", "Meregang"]
+    tag: ["Menekuk", "Berputar", "Mengangkat"],
+    level: "Sedang"
   },
   {
     nama_permainan: "Tebak Gerakan",
@@ -41,7 +44,8 @@ const permainan = [
       "Teman lain menebak."
     ],
     video: ["tebak_gerakan.mp4"],
-    tag: ["Memutar", "Mengayun", "Meregang","Menekuk"]
+    tag: ["Berputar", "Mengayun", "Mengangkat","Menekuk"],
+    level: "Sulit"
   },
   {
     nama_permainan: "Keseimbangan Satu Kaki",
@@ -52,16 +56,18 @@ const permainan = [
       "Bisa dibuat lomba."
     ],
     video: ["keseimbangan.mp4"],
-    tag: ["Keseimbangan"]
+    tag: ["Keseimbangan"],
+    level: "Sulit"
   }
 ];
 
 const mapTagToMateri = {
   Menekuk: "N1",
-  Memutar: "N2",
+  Berputar: "N2",
   Mengayun: "N3",
-  Meregang: "N4",
-  Keseimbangan: "N5"
+  Mengangkat: "N4",
+  Keseimbangan: "N5",
+  Mendorong: "N6"
 };
 
 function generateDataMateri(permainan) {
