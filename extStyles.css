@@ -165,3 +165,12 @@
     padding:  3px 5px;
     border-radius: 8px !important;
 }
+
+.owner p {
+    margin: 0;
+    font-size: 0.8em;
+}
+
+.owner p span {
+    font-size: 1em;
+}
