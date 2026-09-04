@@ -1,5 +1,73 @@
 const permainan = [
   {
+    nama_permainan: "Mengayun Kedua Lengan",
+    instruksi: [],
+    tujuan: "",
+    langkah: [
+      "Siswa berdiri dengan sikap siap, kaki dibuka selebar bahu, kedua tangan di samping badan.",
+      "Siswa mengayunkan lengan lurus ke depan dan ke belakang secara bergantian."
+    ],
+    video: ["mengayun.mp4"],
+    tag: ["Mengayun"],
+    level: "Mudah"
+  },
+  {
+    nama_permainan: "Sikap Kapal Terbang",
+    instruksi: [],
+    tujuan: "",
+    langkah: [
+      "Siswa berdiri dengan sikap siap, kaki dibuka selebar bahu, kedua tangan di samping badan.",
+      "Siswa meluruskan tangan ke samping, dan mengangkat satu kaki lurus ke belakang.",
+      "Siswa lalu mencondongkan badan ke depan, dan menjaga sikap kapal terbang selama mungkin.",
+      "Permainan selesai sesuai instruksi guru."
+    ],
+    video: ["berdiri_satu_kaki.mp4"],
+    tag: ["Keseimbangan"],
+    level: "Mudah"
+  },
+  {
+    nama_permainan: "Mendorong Dinding",
+    instruksi: [],
+    tujuan: "",
+    langkah: [
+      "Siswa berdiri dengan sikap siap, kaki dibuka selebar bahu, kedua tangan di samping badan.",
+      "Siswa menghadap dinding, menunggu aba-aba guru.",
+      "Siswa mendorong dinding, permainan selesai sesuai aba-aba dari guru."
+    ],
+    video: ["mendorong_dinding.mp4"],
+    tag: ["Mendorong"],
+    level: "Mudah"
+  },
+  {
+    nama_permainan: "Dorong Tarik Bola",
+    instruksi: [],
+    tujuan: "",
+    langkah: [
+      "Siswa berdiri dengan sikap siap, kaki dibuka selebar bahu, kedua tangan memegang bola.",
+      "Siswa menunggu instruksi guru.",
+      "Setelah aba-aba, siswa meluruskan tangan ke depan sambil memegang bola.",
+      "Permainan selesai sesuai dengan aba-aba dari guru."
+    ],
+    video: ["mendorong_bola.mp4"],
+    tag: ["Mendorong"],
+    level: "Sedang"
+  },
+  {
+    nama_permainan: "Tepuk Dorong",
+    instruksi: [],
+    tujuan: "",
+    langkah: [
+      "Siswa berdiri berpasangan dengan teman, keduanya berdiri dengan sikap siap, kaki dibuka selebar bahu, kedua tangan di samping badan.",
+      "Kedua siswa saling berhadapan.",
+      "Sesuai instruksi guru, siswa lalu saling mendorong santai dengan kedua tangan saling bertemu.",
+      "Siswa menahan posisi sesuai aba-aba guru."
+    ],
+    video: ["mendorong_tiga.mp4"],
+    tag: ["Mendorong"],
+    level: "Sulit"
+  },
+  // end extras
+  {
     nama_permainan: "Patung Musik (Freeze Game)",
     instruksi: [],
     tujuan: "",
