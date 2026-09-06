@@ -401,7 +401,7 @@ function pilihSubMateri(id, index){
     document.getElementById('teksInstruksi').innerText = instruksiJoin.length <= 0 ? "Ikuti aba-aba dan arahan dari Guru." : instruksiJoin;
 
     let tmpTujuan = materi.permainan[index].tujuan;
-    document.getElementById('teksTujuan').innerText = tmpTujuan.length <= 0 ? `Tujuan pembelajaran dari permainan adalah melakukan latihan gerak manipulatif "${materi.nama_materi}."` : tmpTujuan;
+    document.getElementById('teksTujuan').innerText = tmpTujuan.length <= 0 ? `Tujuan pembelajaran dari permainan adalah melakukan latihan gerak non-lokomotor "${materi.nama_materi}."` : tmpTujuan;
     
     document.getElementById('judulVideoMateri').innerText = "Video " + tmpPermainan;
     
