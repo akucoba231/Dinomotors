@@ -39,7 +39,7 @@ const permainan = [
     level: "Mudah"
   },
   {
-    nama_permainan: "Dorong Tarik Bola",
+    nama_permainan: "Mendorong Bola",
     instruksi: [],
     tujuan: "",
     langkah: [
@@ -53,7 +53,7 @@ const permainan = [
     level: "Sedang"
   },
   {
-    nama_permainan: "Tepuk Dorong",
+    nama_permainan: "Mendorong Berpasangan",
     instruksi: [],
     tujuan: "",
     langkah: [
