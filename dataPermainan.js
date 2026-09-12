@@ -245,7 +245,7 @@ const permainan = [
       "Tahan beberapa detik, lalu kembali ke posisi awal.",
       "Lakukan 5 kali ulangan."
     ],
-    video: ["mendorong_1.mp4"],
+    video: ["mendorong_dinding.mp4"],
     tag: ["Mendorong"],
     level: _level[0],
   },
@@ -260,7 +260,7 @@ const permainan = [
       "Lakukan dengan gerakan terkontrol",
       "Ulangi 8–10 kali secara terkontrol."
     ],
-    video: ["mendorong_2.mp4"],
+    video: ["mendorong_bola.mp4"],
     tag: ["Mendorong"],
     level: _level[1],
   },
@@ -276,7 +276,7 @@ const permainan = [
       "Bergantian setelah 5–10 detik",
       "Jangan mendorong terlalu kuat"
     ],
-    video: ["mendorong_3.mp4"],
+    video: ["mendorong_tiga.mp4"],
     tag: ["Mendorong"],
     level: _level[2],
   }
