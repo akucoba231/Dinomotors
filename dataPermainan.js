@@ -137,7 +137,7 @@ const permainan = [
       "Berdiri tegak dengan kedua tangan berada di sampin badan",
       "Ayunkan tangan kanan ke atas diagonal dan tangan kiri ke bawah diagonal secara bergantian, sambil sedikit memutar badan."
     ],
-    video: [""],
+    video: ["mengayun_3.mp4"],
     tag: ["Mengayun"],
     level: _level[2],
   },
