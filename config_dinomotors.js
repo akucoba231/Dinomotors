@@ -3,8 +3,8 @@ const APP_CONFIG = {
     ownerName: "Kiki Subagja, S. Pd",
     storagePrefix: "dino",
     materiPrefix: "N",
-    assetPath: "../Dinomotors-main/assets/",
-    videoPath: "../Dinomotors-main/video/",
+    assetPath: "./assets/",
+    videoPath: "./video/",
     colors: {
         primary: "#2E7D32",
         primaryLight: "#4CAF50",
