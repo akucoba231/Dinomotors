@@ -699,8 +699,9 @@ const translations = {
         "global_tutup" : "Tutup",
 
         // page-home
-        "home_welcome": "Selamat Datang di Aplikasi Dilemators!",
-        "home_desc": "Aplikasi Media Pembelajaran dan Penilaian Keterampilan Gerak Manipulatif",
+        "home_judul" : "Modul Pembelajaran Digital Keterampilan Motorik" + (APP_CONFIG.tagline_id || ""),
+        "home_welcome": "Selamat Datang di Aplikasi Dinomotors!",
+        "home_desc": "Aplikasi Media Pembelajaran dan Penilaian Keterampilan Gerak Non-Lokomotor",
         "home_by" : "oleh",
         "home_btn_enter": "Masuk Aplikasi ➡️",
         
@@ -756,8 +757,9 @@ const translations = {
         "global_tutup" : "Close",
 
         // page-home
-        "home_welcome": "Welcome to Dilemators App!",
-        "home_desc": "Manipulative Movement Skills Learning and Assessment Media Application",
+        "home_judul" : "Digital Learning Module " + APP_CONFIG.tagline,
+        "home_welcome": "Welcome to Dinomotors App!",
+        "home_desc": "Non-Lokomotor Movement Skills Learning and Assessment Media Application",
         "home_by" : "by",
         "home_btn_enter": "Enter Application ➡️",
         
