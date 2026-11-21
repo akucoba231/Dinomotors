@@ -494,7 +494,7 @@ const langPagePengaturan = {
         pengaturan_label_bahasa: "🌐 Bahasa / Language",
         pengaturan_sync_judul: "☁️ Sinkronisasi Cloud (MQTT)",
         pengaturan_topik_label: "Topik Pemulihan (Auto/Manual):",
-        pengaturan_ph_topik: "Contoh: dilemators/backup/GURU123",
+        pengaturan_ph_topik: "Contoh: dinomotors/backup/GURU123",
         pengaturan_btn_cadangkan: "☁️ Cadangkan",
         pengaturan_btn_pulihkan: "📥 Pulihkan",
         pengaturan_btn_logout: "🚪 Keluar",
@@ -506,7 +506,7 @@ const langPagePengaturan = {
         pengaturan_label_bahasa: "🌐 Bahasa / Language",
         pengaturan_sync_judul: "☁️ Cloud Synchronization (MQTT)",
         pengaturan_topik_label: "Recovery Topic (Auto/Manual):",
-        pengaturan_ph_topik: "Example: dilemators/backup/GURU123",
+        pengaturan_ph_topik: "Example: dinomotors/backup/GURU123",
         pengaturan_btn_cadangkan: "☁️ Backup",
         pengaturan_btn_pulihkan: "📥 Restore",
         pengaturan_btn_logout: "🚪 Logout",
@@ -591,7 +591,7 @@ const langPagePanduan = {
         panduan_subjudul: "Panduan alur penggunaan dan fungsi setiap modul pembelajaran pada aplikasi.",
         
         panduan_tujuan_judul: "🎯 1. Tujuan Pembelajaran",
-        panduan_tujuan_desc: "Memuat Capaian Pembelajaran (CP) dan Tujuan Pembelajaran (TP) PJOK keterampilan gerak manipulatif sebagai acuan kurikulum selama proses pembelajaran.",
+        panduan_tujuan_desc: "Memuat Capaian Pembelajaran (CP) dan Tujuan Pembelajaran (TP) PJOK keterampilan gerak non-lokomotor sebagai acuan kurikulum selama proses pembelajaran.",
 
         panduan_materi_judul: "📚 2. Materi Pembelajaran",
         panduan_materi_desc: "Menampilkan modul unit materi dan variasi permainan. Masuk ke halaman detail materi untuk membaca instruksi gerak dan menonton video peragaan interaktif.",
@@ -618,7 +618,7 @@ const langPagePanduan = {
         panduan_subjudul: "Comprehensive guide on workflows and features of each learning module in the application.",
 
         panduan_tujuan_judul: "🎯 1. Learning Objectives",
-        panduan_tujuan_desc: "Contains Learning Achievements and Objectives for manipulative movement skills as curriculum guidelines during the teaching process.",
+        panduan_tujuan_desc: "Contains Learning Achievements and Objectives for non-locomotor movement skills as curriculum guidelines during the teaching process.",
 
         panduan_materi_judul: "📚 2. Learning Materials",
         panduan_materi_desc: "Displays material units and game variations. Open the detail page to view movement guidelines and watch interactive demonstration videos.",
