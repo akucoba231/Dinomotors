@@ -368,7 +368,7 @@ const permainan_EN = [
       "Focus on shoulder coordination and flexibility."
     ],
     video: ["berputar_1.mp4"],
-    tag: ["Rotating"],
+    tag: ["Twisting"],
     level: _level_EN[0],
   },
   {
@@ -385,7 +385,7 @@ const permainan_EN = [
       "Focus on flexibility, balance, and body coordination."
     ],
     video: ["berputar_2.mp4"],
-    tag: ["Rotating"],
+    tag: ["Twisting"],
     level: _level_EN[1],
   },
   {
@@ -402,7 +402,7 @@ const permainan_EN = [
       "Focus on balance, coordination, flexibility, and body control."
     ],
     video: ["berputar_3.mp4"],
-    tag: ["Rotating"],
+    tag: ["Twisting"],
     level: _level_EN[2],
   },
 
@@ -596,12 +596,12 @@ const mapTagToMateri = {
 
 const mapTagToMateri_EN = {
   Bending: "N1",
-  Rotating: "N2",
+  Twisting: "N2",
   Swinging: "N3",
   Lifting: "N4",
   Balancing: "N5",
   Pushing: "N6"
-};
+};    
 
 
 // function generateDataMateri(permainan) {
