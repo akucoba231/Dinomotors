@@ -13,7 +13,8 @@ const APP_CONFIG = {
         btnShadow: "#388E3C"
     },
     wordartGradient: "linear-gradient(90deg, #81C784, #1B5E20)",
-    tagline: "Non-Locomotor Motor Skills"
+    tagline: "Non-Locomotor Motor Skills",
+    tagline_id: "Non-Lokomotor"
 };
 
 let _level = ["Mudah","Sedang","Sulit"];
