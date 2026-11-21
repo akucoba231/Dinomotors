@@ -699,7 +699,7 @@ const translations = {
         "global_tutup" : "Tutup",
 
         // page-home
-        "home_judul" : "Modul Pembelajaran Digital Keterampilan Motorik" + (APP_CONFIG.tagline_id || ""),
+        "home_judul" : "Modul Pembelajaran Digital Keterampilan Motorik " + (APP_CONFIG.tagline_id || ""),
         "home_welcome": "Selamat Datang di Aplikasi Dinomotors!",
         "home_desc": "Aplikasi Media Pembelajaran dan Penilaian Keterampilan Gerak Non-Lokomotor",
         "home_by" : "oleh",
